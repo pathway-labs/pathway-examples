@@ -1,3 +1,0 @@
-pathway
-textblob
-geopy
