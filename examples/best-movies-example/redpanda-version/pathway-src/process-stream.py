@@ -72,7 +72,7 @@ t_best_ratings = compute_best(t_ratings, 3)
 # We output the results in a dedicated CSV file
 pw.csv.write(t_best_ratings, "./best_ratings.csv")
 
-# We wait for Kafka to be ready.
+# We wait for Redpanda to be ready.
 time.sleep(20)
 
 # We launch the computation.

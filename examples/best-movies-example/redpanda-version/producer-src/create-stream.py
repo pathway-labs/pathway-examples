@@ -12,7 +12,7 @@ producer = KafkaProducer(
     security_protocol="PLAINTEXT",
     api_version=(0, 10, 2),
 )
-producer.send(topic, "*COMMIT*".encode("utf-8"), partition=0)
+producer.send(topic, "*COMMIT*".encode("utf-8"))
 time.sleep(2)
 
 with open("./dataset.csv", newline="") as csvfile:
@@ -29,9 +29,9 @@ with open("./dataset.csv", newline="") as csvfile:
             "rating": float(row[2]),
             "timestamp": int(row[3]),
         }
-        producer.send(topic, (json.dumps(message_json)).encode("utf-8"), partition=0)
+        producer.send(topic, (json.dumps(message_json)).encode("utf-8"))
         time.sleep(0.1)
 
-producer.send(topic, "*COMMIT*".encode("utf-8"), partition=0)
+producer.send(topic, "*COMMIT*".encode("utf-8"))
 time.sleep(2)
 producer.close()
