@@ -28,6 +28,6 @@ To access the logs in ElasticSearch, you can do `curl localhost:9200/alerts/_sea
 Note that ElasticSearch takes a few seconds before being available: you should wait ~15s before accessing it and generating the logs.
 
 You can use `make connect-pathway` to connect to the pathway container.
-By adding a `pw.csv.write(log_table, "./logs.csv")` you can see the logs by typing `cat logs.csv` from the pathway container.
+By adding a `pw.io.csv.write(log_table, "./logs.csv")` you can see the logs by typing `cat logs.csv` from the pathway container.
 
 To stop, use `make stop`.

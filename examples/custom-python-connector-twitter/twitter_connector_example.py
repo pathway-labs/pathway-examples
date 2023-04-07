@@ -25,7 +25,7 @@ class TwitterClient(tweepy.StreamingClient):
         )
 
 
-class TwitterSubject(pw.python.ConnectorSubject):
+class TwitterSubject(pw.io.python.ConnectorSubject):
     _twitter_client: TwitterClient
 
     def __init__(self) -> None:
@@ -40,7 +40,7 @@ class TwitterSubject(pw.python.ConnectorSubject):
 
 
 if __name__ == "__main__":
-    input = pw.python.read(
+    input = pw.io.python.read(
         TwitterSubject(),
         primary_key=["id"],
         value_columns=["text"],
