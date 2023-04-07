@@ -47,7 +47,7 @@ if __name__ == "__main__":
         autocommit_duration_ms=1000,
     )
 
-    pw.csv.write(input, "output.csv")
+    pw.io.csv.write(input, "output.csv")
 
     try:
         pw.run()

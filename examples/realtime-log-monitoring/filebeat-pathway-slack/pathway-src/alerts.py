@@ -28,7 +28,7 @@ def convert_timestamp(datestring):
 
 # We use the Kafka connector to listen to the "logs" topic
 # We only need the timestamp and the message
-log_table = pw.kafka.read(
+log_table = pw.io.kafka.read(
     rdkafka_settings,
     topic_names=["logs"],
     format="json",

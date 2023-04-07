@@ -19,7 +19,7 @@ rdkafka_settings = {
 }
 
 # use kafka connector to read the kafka stream
-t = pw.kafka.read(
+t = pw.io.kafka.read(
     rdkafka_settings,
     topic_names=["linear-regression"],
     value_columns=["x", "y"],
@@ -29,7 +29,7 @@ t = pw.kafka.read(
 )
 
 # write the input data to a CSV file for future reference
-pw.csv.write(t, "regression_input.csv")
+pw.io.csv.write(t, "regression_input.csv")
 
 # expand your table to include x2 and x*y
 t = t.select(
@@ -72,7 +72,7 @@ results_table = statistics_table.select(
 )
 
 # write results out to csv
-pw.csv.write(results_table, "regression_output_stream.csv")
+pw.io.csv.write(results_table, "regression_output_stream.csv")
 
 # run the pipeline
 pw.run()
