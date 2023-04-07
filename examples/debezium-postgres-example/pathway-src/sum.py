@@ -41,7 +41,7 @@ t = t.reduce(sum=pw.reducers.sum(t.value))
 
 # We use the Kafka connector to send the resulting output stream containing the sum
 pw.io.csv.write(t, "essai.csv")
-pw.postgres.write(t, output_postgres_settings, "sum_table")
+pw.io.postgres.write(t, output_postgres_settings, "sum_table")
 
 # We launch the computation.
 pw.run()
