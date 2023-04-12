@@ -72,7 +72,7 @@ def on_alert_event(row, time, is_addition):
     ).raise_for_status()
 
 
-pw.subscribe(t_alert, on_alert_event)
+pw.io.subscribe(t_alert, on_alert_event)
 
 time.sleep(10)
 # We launch the computation.
