@@ -80,19 +80,19 @@ if __name__ == "__main__":
         "user": "postgres",
         "password": "changeme",
     }
-    pw.postgres.write_snapshot(
+    pw.io.postgres.write_snapshot(
         author_meta,
         postgres_settings=postgres_settings,
         table_name="author_meta",
         primary_key=["tweet_to_author_id"],
     )
-    pw.postgres.write_snapshot(
+    pw.io.postgres.write_snapshot(
         grouped,
         postgres_settings=postgres_settings,
         table_name="grouped",
         primary_key=["tweet_to_author_id", "time_bucket"],
     )
-    pw.postgres.write_snapshot(
+    pw.io.postgres.write_snapshot(
         tweet_pairs,
         postgres_settings=postgres_settings,
         table_name="tweet_pairs",
