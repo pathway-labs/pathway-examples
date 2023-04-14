@@ -75,7 +75,7 @@ def get_cached_geolocation_fun():
 
 
 def add_geolocation(tweet_pairs: pw.Table[TweetPairs]) -> pw.Table:
-    locations = pw.Table.concat(
+    locations = pw.Table.concat_reindex(
         tweet_pairs.select(location=tweet_pairs.tweet_from_author_location),
         tweet_pairs.select(location=tweet_pairs.tweet_to_author_location),
     )
