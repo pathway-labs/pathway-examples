@@ -73,7 +73,7 @@ def parse_and_prefilter_tweets(tweets: pw.Table[TweetUnparsed]) -> pw.Table[Twee
         )
 
     processed = tweets.select(processed=pw.apply(_prepare_pairs, tweets.data))
-    processed = processed.filter(processed.processed != None)  # noqa: E711
+    processed = processed.filter(processed.processed.is_not_none())
     result = unpack_col(
         processed.processed,
         "tweet_from_id",
