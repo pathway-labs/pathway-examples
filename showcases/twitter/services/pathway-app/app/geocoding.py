@@ -1,5 +1,6 @@
 import gzip
 import json
+import os
 import pickle
 import re
 import urllib
@@ -18,7 +19,9 @@ pelias_url = "http://pelias_geocoder:3000"
 
 # Reading geocoding results from cache instead of querying pelias. Set None to not use cache.
 # CACHE_FILE_URL = None
-CACHE_FILE_URL = "geolocator_cache.pkl.gz"
+CACHE_FILE_URL = (
+    os.path.dirname(os.path.realpath(__file__)) + "/../geolocator_cache.pkl.gz"
+)
 
 
 class GeolocatorInvalidFlags(Enum):
