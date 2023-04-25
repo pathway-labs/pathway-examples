@@ -16,21 +16,21 @@ def compute_metadata_for_authors(tweet_pairs: pw.Table):
     )
     author_coords = (
         groupby_reduce_majority(tweet_pairs.tweet_to_author_id, tweet_pairs.coord_to)
-        .unsafe_promise_same_universe_as(unique_authors)
+        .with_universe_of(unique_authors)
         .select(coord_to=pw.this.majority)
     )
     author_username = (
         groupby_reduce_majority(
             tweet_pairs.tweet_to_author_id, tweet_pairs.tweet_to_author_username
         )
-        .unsafe_promise_same_universe_as(unique_authors)
+        .with_universe_of(unique_authors)
         .select(author_username=pw.this.majority)
     )
     author_location = (
         groupby_reduce_majority(
             tweet_pairs.tweet_to_author_id, tweet_pairs.tweet_to_author_location
         )
-        .unsafe_promise_same_universe_as(unique_authors)
+        .with_universe_of(unique_authors)
         .select(author_location=pw.this.majority)
     )
 
@@ -146,7 +146,7 @@ def compute_aggs_per_author_and_timewindow(tweet_pairs: pw.Table):
         stats = (
             pairs.groupby(pairs.tweet_to_author_id, pairs.time_bucket)
             .reduce(**{distance_bucket + "_count": pw.reducers.count()})
-            .unsafe_promise_universe_is_subset_of(total_stats)
+            .promise_universe_is_subset_of(total_stats)
         )
         total_stats = total_stats.update_cells(stats)
     return total_stats
