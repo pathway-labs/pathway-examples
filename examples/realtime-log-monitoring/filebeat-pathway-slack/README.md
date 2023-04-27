@@ -25,6 +25,6 @@ How to launch the project:
 
 The updates should be received directly in your Slack channel.
 You can use `make connect-pathway` to connect to the pathway container.
-By adding a `pw.csv.write(log_table, "./logs.csv")` you can see the logs by typing `cat logs.csv` from the pathway container.
+By adding a `pw.io.csv.write(log_table, "./logs.csv")` you can see the logs by typing `cat logs.csv` from the pathway container.
 
 To stop, use `make stop`.

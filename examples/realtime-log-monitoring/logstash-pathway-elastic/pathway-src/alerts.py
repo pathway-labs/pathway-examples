@@ -23,7 +23,7 @@ def convert_timestamp(datestring):
 
 # We use the Kafka connector to listen to the "logs" topic
 # We only need the timestamp and the message
-t_logs = pw.kafka.read(
+t_logs = pw.io.kafka.read(
     rdkafka_settings,
     topic_names=["logs"],
     format="json",
@@ -53,10 +53,10 @@ t_alert = t_alert.select(pw.this.alert)
 
 time.sleep(10)
 
-pw.elasticsearch.write(
+pw.io.elasticsearch.write(
     t_alert,
     "http://elasticsearch:9200",
-    auth=pw.elasticsearch.ElasticSearchAuth.basic("elastic", "password"),
+    auth=pw.io.elasticsearch.ElasticSearchAuth.basic("elastic", "password"),
     index_name="alerts",
 )
 

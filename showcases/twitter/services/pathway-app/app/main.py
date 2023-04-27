@@ -25,8 +25,6 @@ from processing import (
 from schemas import TweetUnparsed
 
 import pathway as pw
-from pathway.internals import parse_graph
-from pathway.internals.rustpy_builder import RustpyBuilder
 
 
 def process_tweets(tweets: pw.Table[TweetUnparsed]):
@@ -50,7 +48,7 @@ def get_data_table(dataset_path, poll_new_objects):
     if dataset_path:
         print("Using FS path {} as a source of tweets".format(dataset_path))
         return pw.io.plaintext.read(
-            path=dataset_path, poll_new_objects=poll_new_objects
+            path=dataset_path, mode="streaming" if poll_new_objects else "static"
         )
     else:
         print("Using Kafka as a source of tweets")
@@ -80,23 +78,23 @@ if __name__ == "__main__":
         "user": "postgres",
         "password": "changeme",
     }
-    pw.postgres.write_snapshot(
+    pw.io.postgres.write_snapshot(
         author_meta,
         postgres_settings=postgres_settings,
         table_name="author_meta",
         primary_key=["tweet_to_author_id"],
     )
-    pw.postgres.write_snapshot(
+    pw.io.postgres.write_snapshot(
         grouped,
         postgres_settings=postgres_settings,
         table_name="grouped",
         primary_key=["tweet_to_author_id", "time_bucket"],
     )
-    pw.postgres.write_snapshot(
+    pw.io.postgres.write_snapshot(
         tweet_pairs,
         postgres_settings=postgres_settings,
         table_name="tweet_pairs",
         primary_key=["tweet_from_id", "tweet_to_id"],
     )
 
-    RustpyBuilder(parse_graph.G).run_outputs()
+    pw.run()

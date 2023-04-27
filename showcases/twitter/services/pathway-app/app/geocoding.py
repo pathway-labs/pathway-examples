@@ -1,5 +1,6 @@
 import gzip
 import json
+import os
 import pickle
 import re
 import urllib
@@ -18,7 +19,9 @@ pelias_url = "http://pelias_geocoder:3000"
 
 # Reading geocoding results from cache instead of querying pelias. Set None to not use cache.
 # CACHE_FILE_URL = None
-CACHE_FILE_URL = "geolocator_cache.pkl.gz"
+CACHE_FILE_URL = (
+    os.path.dirname(os.path.realpath(__file__)) + "/../geolocator_cache.pkl.gz"
+)
 
 
 class GeolocatorInvalidFlags(Enum):
@@ -75,7 +78,7 @@ def get_cached_geolocation_fun():
 
 
 def add_geolocation(tweet_pairs: pw.Table[TweetPairs]) -> pw.Table:
-    locations = pw.Table.concat(
+    locations = pw.Table.concat_reindex(
         tweet_pairs.select(location=tweet_pairs.tweet_from_author_location),
         tweet_pairs.select(location=tweet_pairs.tweet_to_author_location),
     )
@@ -85,35 +88,23 @@ def add_geolocation(tweet_pairs: pw.Table[TweetPairs]) -> pw.Table:
         geocoded=pw.apply_async(get_cached_geolocation_fun(), unique_locations.location)
     )
 
-    coord_from = (
-        tweet_pairs.join(
-            geocoded_locations,
-            tweet_pairs.tweet_from_author_location == geocoded_locations.location,
-            id=tweet_pairs.id,
-        )
-        .select(coord_from=geocoded_locations.geocoded)
-        .unsafe_promise_same_universe_as(tweet_pairs)
-    )
-    coord_to = (
-        tweet_pairs.join(
-            geocoded_locations,
-            tweet_pairs.tweet_to_author_location == geocoded_locations.location,
-            id=tweet_pairs.id,
-        )
-        .select(coord_to=geocoded_locations.geocoded)
-        .unsafe_promise_same_universe_as(tweet_pairs)
+    coord = tweet_pairs.select(
+        coord_from=geocoded_locations.ix_ref(
+            tweet_pairs.tweet_from_author_location
+        ).geocoded,
+        coord_to=geocoded_locations.ix_ref(
+            tweet_pairs.tweet_to_author_location
+        ).geocoded,
     )
 
     def is_good_location(geolocated) -> bool:
         return geolocated not in [e.value for e in GeolocatorInvalidFlags]
 
-    coord_from_is_good = coord_from.select(
-        is_good=pw.apply(is_good_location, coord_from.coord_from)
+    coord_is_good = coord.select(
+        from_is_good=pw.apply(is_good_location, coord.coord_from),
+        to_is_good=pw.apply(is_good_location, coord.coord_to),
     )
-    coord_to_is_good = coord_to.select(
-        is_good=pw.apply(is_good_location, coord_to.coord_to)
+    tweet_pair_is_good = coord_is_good.select(
+        is_good=coord_is_good.from_is_good & coord_is_good.to_is_good
     )
-    tweet_pair_is_good = tweet_pairs.select(
-        is_good=coord_from_is_good.is_good & coord_to_is_good.is_good
-    )
-    return tweet_pairs + coord_from + coord_to + tweet_pair_is_good
+    return tweet_pairs + coord + tweet_pair_is_good
