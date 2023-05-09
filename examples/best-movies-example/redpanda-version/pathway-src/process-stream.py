@@ -55,7 +55,7 @@ def compute_best(t_ratings, K):
     return t_best_ratings
 
 
-t_ratings = pw.kafka.read(
+t_ratings = pw.io.kafka.read(
     rdkafka_settings,
     topic_names=["ratings"],
     format="json",
@@ -70,7 +70,7 @@ t_ratings = pw.kafka.read(
 t_best_ratings = compute_best(t_ratings, 3)
 
 # We output the results in a dedicated CSV file
-pw.csv.write(t_best_ratings, "./best_ratings.csv")
+pw.io.csv.write(t_best_ratings, "./best_ratings.csv")
 
 # We wait for Redpanda to be ready.
 time.sleep(20)
