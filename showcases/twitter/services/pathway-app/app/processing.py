@@ -14,30 +14,24 @@ def compute_metadata_for_authors(tweet_pairs: pw.Table):
     unique_authors = tweet_pairs.groupby(tweet_pairs.tweet_to_author_id).reduce(
         tweet_pairs.tweet_to_author_id
     )
-    # unique_authors = tweet_pairs.groupby(id=tweet_pairs.tweet_to_author_id).reduce()  # fails - why?!
-    author_coords = groupby_reduce_majority(
-        tweet_pairs.tweet_to_author_id, tweet_pairs.coord_to
-    )
     author_coords = (
-        author_coords.select(coord_to=author_coords.majority)
-        .with_id_from(author_coords.tweet_to_author_id)
-        .unsafe_promise_same_universe_as(unique_authors)
-    )
-    author_username = groupby_reduce_majority(
-        tweet_pairs.tweet_to_author_id, tweet_pairs.tweet_to_author_username
+        groupby_reduce_majority(tweet_pairs.tweet_to_author_id, tweet_pairs.coord_to)
+        .with_universe_of(unique_authors)
+        .select(coord_to=pw.this.majority)
     )
     author_username = (
-        author_username.select(author_username=author_username.majority)
-        .with_id_from(author_username.tweet_to_author_id)
-        .unsafe_promise_same_universe_as(unique_authors)
-    )
-    author_location = groupby_reduce_majority(
-        tweet_pairs.tweet_to_author_id, tweet_pairs.tweet_to_author_location
+        groupby_reduce_majority(
+            tweet_pairs.tweet_to_author_id, tweet_pairs.tweet_to_author_username
+        )
+        .with_universe_of(unique_authors)
+        .select(author_username=pw.this.majority)
     )
     author_location = (
-        author_location.select(author_location=author_location.majority)
-        .with_id_from(author_location.tweet_to_author_id)
-        .unsafe_promise_same_universe_as(unique_authors)
+        groupby_reduce_majority(
+            tweet_pairs.tweet_to_author_id, tweet_pairs.tweet_to_author_location
+        )
+        .with_universe_of(unique_authors)
+        .select(author_location=pw.this.majority)
     )
 
     def add_random_shift(coords, id):
@@ -97,10 +91,8 @@ def add_sentiment(tweet_pairs):
         return TextBlob(txt).sentiment.polarity
 
     tweet_pairs += tweet_pairs.select(
-        tweet_from_sentiment=pw.apply(_compute_sentiment, tweet_pairs.tweet_from_text)
-    )
-    tweet_pairs += tweet_pairs.select(
-        tweet_to_sentiment=pw.apply(_compute_sentiment, tweet_pairs.tweet_to_text)
+        tweet_from_sentiment=pw.apply(_compute_sentiment, tweet_pairs.tweet_from_text),
+        tweet_to_sentiment=pw.apply(_compute_sentiment, tweet_pairs.tweet_to_text),
     )
 
     return tweet_pairs
@@ -123,7 +115,7 @@ def add_magic_influence(tweet_pairs: pw.Table):
     return tweet_pairs
 
 
-def compute_aggs_per_author_and_timewindow(tweet_pairs):
+def compute_aggs_per_author_and_timewindow(tweet_pairs: pw.Table):
     """Computes aggregate statistics for every author_id and date window."""
 
     def _bucketize_datetime(x):
@@ -137,8 +129,8 @@ def compute_aggs_per_author_and_timewindow(tweet_pairs):
         tweet_pairs.tweet_to_author_id,
         tweet_pairs.time_bucket,
     ).reduce(
-        tweet_to_author_id=tweet_pairs.tweet_to_author_id,
-        time_bucket=tweet_pairs.time_bucket,
+        tweet_pairs.tweet_to_author_id,
+        tweet_pairs.time_bucket,
         tweet_from_sentiment=pw.reducers.sum(tweet_pairs.tweet_from_sentiment),
         author_from_magic_influence=pw.reducers.sum(
             tweet_pairs.author_from_magic_influence
@@ -154,7 +146,7 @@ def compute_aggs_per_author_and_timewindow(tweet_pairs):
         stats = (
             pairs.groupby(pairs.tweet_to_author_id, pairs.time_bucket)
             .reduce(**{distance_bucket + "_count": pw.reducers.count()})
-            .unsafe_promise_universe_is_subset_of(total_stats)
+            .promise_universe_is_subset_of(total_stats)
         )
         total_stats = total_stats.update_cells(stats)
     return total_stats
@@ -165,13 +157,11 @@ def _mark_coords_in_set(tweet_pairs: pw.Table, bad_coords: pw.Table):
     is_good_update = tweet_pairs.join(
         bad_coords, tweet_pairs.coord_to == bad_coords.coord, id=tweet_pairs.id
     ).select(is_good=False)
-    is_good_update = is_good_update.unsafe_promise_universe_is_subset_of(tweet_pairs)
     tweet_pairs = tweet_pairs.update_cells(is_good_update)
 
     is_good_update = tweet_pairs.join(
         bad_coords, tweet_pairs.coord_from == bad_coords.coord, id=tweet_pairs.id
     ).select(is_good=False)
-    is_good_update = is_good_update.unsafe_promise_universe_is_subset_of(tweet_pairs)
     tweet_pairs = tweet_pairs.update_cells(is_good_update)
 
     return tweet_pairs
@@ -199,9 +189,7 @@ def _mark_bad_coords(
         coord=reliable_authors.coord_to,
         is_coord_good=pw.reducers.max(reliable_authors.is_good),
     )
-    bad_coords = coords_goodness.filter(
-        coords_goodness.is_coord_good == False  # noqa: E712
-    )
+    bad_coords = coords_goodness.filter(~coords_goodness.is_coord_good)
     tweet_pairs = _mark_coords_in_set(tweet_pairs, bad_coords)
     return tweet_pairs
 
@@ -213,7 +201,7 @@ def _filter_out_locations_by_closeness_step(
     CLOSE_FRACTION_CUTOFF = (
         0.005  # fraction of close responses needed to consider author's location valid
     )
-    good_tweet_pairs = tweet_pairs.filter(tweet_pairs.is_good == True)  # noqa: E712
+    good_tweet_pairs = tweet_pairs.filter(tweet_pairs.is_good)
     grouped = compute_aggs_per_author_and_timewindow(good_tweet_pairs)
 
     # sum all statistics for referenced authors (ignore time)
