@@ -55,7 +55,7 @@ def compute_best(t_ratings, K):
     return t_best_ratings
 
 
-t_ratings = pw.io.kafka.read(
+t_ratings = pw.io.redpanda.read(
     rdkafka_settings,
     topic_names=["ratings"],
     format="json",
