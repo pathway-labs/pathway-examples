@@ -1,7 +1,6 @@
 import time
 
 import pathway as pw
-from pathway.stdlib.utils.col import flatten_column
 
 K = 3
 
@@ -46,7 +45,9 @@ def compute_best(t_ratings, K):
     t_best_ratings = t_best_ratings.select(
         K_best=pw.apply(lambda my_tuple: (list(my_tuple))[-K:], pw.this.total_tuple)
     )
-    t_best_ratings = flatten_column(t_best_ratings.K_best).select(pw.this.K_best)
+    t_best_ratings = t_best_ratings.flatten(t_best_ratings.K_best).select(
+        pw.this.K_best
+    )
     t_best_ratings = t_best_ratings.select(
         movieId=pw.apply(lambda rating_tuple: rating_tuple[2], pw.this.K_best),
         average_rating=pw.apply(lambda rating_tuple: rating_tuple[0], pw.this.K_best),
