@@ -73,7 +73,7 @@ def add_distance_and_buckets(tweet_pairs, distance_thresholds=[200, 2000]):
         distance=pw.apply(_compute_dist, tweet_pairs.coord_from, tweet_pairs.coord_to)
     )
 
-    def _bucketize_distance(x):
+    def _bucketize_distance(x) -> str:
         labels = {0: "close", 1: "medium", 2: "far"}
         for i in range(len(distance_thresholds)):
             if x < distance_thresholds[i]:
