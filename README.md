@@ -6,8 +6,8 @@
         <img src="https://img.shields.io/github/license/pathwaycom/pathway-examples?style=plastic" alt="Contributors"/></a>
     <a href="https://github.com/pathwaycom/pathway-examples/graphs/contributors">
         <img src="https://img.shields.io/github/contributors/pathwaycom/pathway-examples?style=plastic" alt="Contributors"/></a>
-    <a href="https://github.com/pathwaycom/pathway-examples/actions/workflows/install_test.yml">
-        <img src="https://img.shields.io/github/actions/workflow/status/pathwaycom/pathway-examples/install_test.yml?style=plastic" alt="Build" /></a> 
+    <a href="https://github.com/pathwaycom/pathway-examples/actions/workflows/install_package.yml">
+        <img src="https://img.shields.io/github/actions/workflow/status/pathwaycom/pathway-examples/install_package.yml?style=plastic" alt="Build" /></a> 
         <img src="https://img.shields.io/badge/OS-Linux-green" alt="Linux"/>
         <img src="https://img.shields.io/badge/OS-macOS-green" alt="macOS"/>
       <br>
