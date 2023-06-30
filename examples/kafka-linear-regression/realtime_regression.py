@@ -21,7 +21,7 @@ rdkafka_settings = {
 # use kafka connector to read the kafka stream
 t = pw.io.kafka.read(
     rdkafka_settings,
-    topic_names=["linear-regression"],
+    topic="linear-regression",
     value_columns=["x", "y"],
     format="json",
     autocommit_duration_ms=1000,

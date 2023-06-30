@@ -30,7 +30,7 @@ def convert_timestamp(datestring):
 # We only need the timestamp and the message
 log_table = pw.io.kafka.read(
     rdkafka_settings,
-    topic_names=["logs"],
+    topic="logs",
     format="json",
     value_columns=[
         "@timestamp",

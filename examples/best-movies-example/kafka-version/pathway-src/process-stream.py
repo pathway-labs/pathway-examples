@@ -58,7 +58,7 @@ def compute_best(t_ratings, K):
 
 t_ratings = pw.io.kafka.read(
     rdkafka_settings,
-    topic_names=["ratings"],
+    topic="ratings",
     format="json",
     value_columns=[
         "movieId",
