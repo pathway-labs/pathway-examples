@@ -1,3 +1,5 @@
+# Copyright © 2023 Pathway
+
 from __future__ import annotations
 
 import os

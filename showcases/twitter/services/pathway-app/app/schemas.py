@@ -1,3 +1,5 @@
+# Copyright © 2023 Pathway
+
 from typing import Any
 
 import pathway as pw

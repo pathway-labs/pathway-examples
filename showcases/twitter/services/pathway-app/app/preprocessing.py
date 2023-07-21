@@ -1,3 +1,5 @@
+# Copyright © 2023 Pathway
+
 import json
 
 from schemas import TweetPairs, TweetUnparsed

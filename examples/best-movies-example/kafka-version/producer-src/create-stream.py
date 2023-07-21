@@ -1,3 +1,5 @@
+# Copyright © 2023 Pathway
+
 import csv
 import json
 import time

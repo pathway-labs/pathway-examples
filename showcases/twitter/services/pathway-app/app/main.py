@@ -1,6 +1,4 @@
-# Copyright (c) 2022 NavAlgo
-#
-# Proprietary and confidential.
+# Copyright © 2023 Pathway
 
 """Pathway code for twitter showcase.
 

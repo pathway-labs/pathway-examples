@@ -1,3 +1,5 @@
+# Copyright © 2023 Pathway
+
 import json
 import math
 
