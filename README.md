@@ -17,14 +17,18 @@
     <a href="https://twitter.com/intent/follow?screen_name=pathway_com">
         <img src="https://img.shields.io/twitter/follow/pathway_com?style=social&logo=twitter"
             alt="follow on Twitter"></a>
+  <a href="https://linkedin.com/company/pathway">
+        <img src="https://img.shields.io/badge/pathway-0077B5?style=social&logo=linkedin" alt="follow on LinkedIn"></a>
 </p>
 
-
+# Pathway examples
 
 This repository contains examples of data processing using [Pathway](https://pathway.com/developers/documentation/introduction/welcome), the Python-based programming framework for easy building of realtime and reactive data products.
 
-To run the examples, please visit [pathway.com](https://pathway.com/developers/documentation/introduction/installation-and-first-steps) to get access to the beta pip package.
+The directories of this repository contain a number of standalone examples with their own README files. Examples involving multiple files and components are usually launched through the provided Docker setup. Examples consisting of single Python files are usually run on a local machine or in Google Colab. To run the examples on a local machine you may first want to install the Pathway package on your Python installation.
+```
+pip install -U pathway
+```
+(for more information and troubleshooting, see the [main repo of the Pathway package](https://github.com/pathwaycom/pathway)).
 
 For a quick start, you may want to check out, for instance, our [Pagerank implementation](tutorials/pagerank.ipynb) prepared as a Jupyter notebook, runnable directly from [Google Colab](https://colab.research.google.com/github/pathwaycom/pathway-examples/blob/main/tutorials/pagerank.ipynb).
-
-The talk "Reactive Data Processing in Python" at PyData Global 2022 [[slides]](/Pathway%20-%20PyData%20Global%202022.pdf) [[video]](https://vimeo.com/pathwaycom/pydata2022) also provides an introduction to Pathway and this repo.
