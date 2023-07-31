@@ -9,7 +9,7 @@ RUN status_code=$(curl --write-out %{http_code} --silent --output /dev/null $PAT
     fi
 WORKDIR /pathway_app
 COPY ./requirements.txt /pathway_app/requirements.txt
-RUN pip install --no-cache-dir --upgrade --extra-index-url $PATHWAY_INDEX_URL -r /pathway_app/requirements.txt
+RUN pip install --no-cache-dir -r /pathway_app/requirements.txt
 COPY ./app /pathway_app/app
 COPY ./geolocator_cache.pkl.gz /pathway_app
 CMD ["python", "app/main.py", "--dataset-path", "/shared-volume", "--poll-new-objects", "true"]

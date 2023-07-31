@@ -9,7 +9,7 @@ RUN status_code=$(curl --write-out %{http_code} --silent --output /dev/null $PAT
     fi
 WORKDIR /pathway_app
 COPY ./requirements.txt /pathway_app/requirements.txt
-RUN pip install --no-cache-dir --upgrade --extra-index-url $PATHWAY_INDEX_URL -r /pathway_app/requirements.txt
+RUN pip install --no-cache-dir -r /pathway_app/requirements.txt
 COPY ./app /pathway_app/app
 COPY ./filter_vmas.txt.gz /pathway_app/
 COPY ./geolocator_cache.pkl.gz /pathway_app

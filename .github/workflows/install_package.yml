@@ -27,7 +27,7 @@ jobs:
           rm -rf $ENV_NAME
           python -m venv ${ENV_NAME}
           source ${ENV_NAME}/bin/activate
-          pip install --prefer-binary -U --extra-index-url https://packages.pathway.com/966431ef6ba pathway
+          pip install --prefer-binary -U pathway
           PATHWAY_VER=$(python -c 'import pathway; print(pathway.__version__)')
           echo "PATHWAY_VER_Linux=$PATHWAY_VER" >> $GITHUB_OUTPUT
 
