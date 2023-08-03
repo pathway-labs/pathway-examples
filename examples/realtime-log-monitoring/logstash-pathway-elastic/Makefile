@@ -1,11 +1,11 @@
 
 build:
-	docker-compose up -d
+	docker compose up -d
 
 stop:
-	docker-compose down -v
+	docker compose down -v
 
 connect:
-	docker-compose exec filebeat bash
+	docker compose exec filebeat bash
 connect-pathway:
-	docker-compose exec pathway bash
+	docker compose exec pathway bash

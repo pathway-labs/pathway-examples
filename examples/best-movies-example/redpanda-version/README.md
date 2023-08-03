@@ -14,10 +14,10 @@ we encourage you to test it on the entire dataset.
 
 ## Launching the program
 
-You can launch the project using `docker-compose up -d` or using the make file.
+You can launch the project using `docker compose up -d` or using the make file.
 
 To access the Pathway's container and check the results:
- - connect to the container with `make connect` (or `docker-compose exec -it pathway bash`)
+ - connect to the container with `make connect` (or `docker compose exec -it pathway bash`)
  - print the file `cat best_ratings.csv`
 
 You can access the logs of the different containers using the commands in the Makefile
