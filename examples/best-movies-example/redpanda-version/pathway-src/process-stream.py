@@ -22,7 +22,7 @@ def compute_best(t_ratings, K):
     t_best_ratings = t_ratings.groupby(pw.this.movieId).reduce(
         pw.this.movieId,
         sum_ratings=pw.reducers.sum(pw.this.rating),
-        number_ratings=pw.reducers.count(pw.this.rating),
+        number_ratings=pw.reducers.count(),
     )
     t_best_ratings = t_best_ratings.select(
         pw.this.movieId,

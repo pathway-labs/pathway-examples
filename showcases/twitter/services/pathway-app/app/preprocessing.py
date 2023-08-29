@@ -91,5 +91,5 @@ def parse_and_prefilter_tweets(tweets: pw.Table[TweetUnparsed]) -> pw.Table[Twee
         "tweet_to_author_id",
         "tweet_to_author_username",
         "tweet_to_author_location",
-    )
+    ).update_types(**TweetPairs)
     return result

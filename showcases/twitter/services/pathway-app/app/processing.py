@@ -6,6 +6,7 @@ import math
 import dateutil.parser
 import numpy as np
 from geopy import distance as geo_distance
+from schemas import TweetPairsSentiment
 from textblob import TextBlob
 
 import pathway as pw
@@ -88,7 +89,7 @@ def add_distance_and_buckets(tweet_pairs, distance_thresholds=[200, 2000]):
     return tweet_pairs
 
 
-def add_sentiment(tweet_pairs):
+def add_sentiment(tweet_pairs: pw.Table):
     def _compute_sentiment(txt):
         return TextBlob(txt).sentiment.polarity
 
@@ -97,11 +98,11 @@ def add_sentiment(tweet_pairs):
         tweet_to_sentiment=pw.apply(_compute_sentiment, tweet_pairs.tweet_to_text),
     )
 
-    return tweet_pairs
+    return tweet_pairs.update_types(**TweetPairsSentiment)
 
 
 def add_magic_influence(tweet_pairs: pw.Table):
-    def _compute_magic_influence(public_metrics):
+    def _compute_magic_influence(public_metrics) -> float:
         public_metrics_dict = json.loads(public_metrics)
         return (
             public_metrics_dict["followers_count"] ** 0.5

@@ -36,7 +36,7 @@ def process_tweets(tweets: pw.Table[TweetUnparsed]):
     tweet_pairs = add_magic_influence(tweet_pairs)
     tweet_pairs = filter_out_locations_by_closeness(tweet_pairs, author_meta)
     grouped = compute_aggs_per_author_and_timewindow(
-        tweet_pairs.filter(tweet_pairs.is_good == True)  # noqa: E712
+        tweet_pairs.filter(tweet_pairs.is_good)
     )
     author_meta = enrich_metadata_with_total_influence(grouped, author_meta)
     return tweet_pairs, grouped, author_meta
