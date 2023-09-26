@@ -98,7 +98,7 @@ def add_sentiment(tweet_pairs: pw.Table):
         tweet_to_sentiment=pw.apply(_compute_sentiment, tweet_pairs.tweet_to_text),
     )
 
-    return tweet_pairs.update_types(**TweetPairsSentiment)
+    return tweet_pairs.update_types(**TweetPairsSentiment.typehints())
 
 
 def add_magic_influence(tweet_pairs: pw.Table):
