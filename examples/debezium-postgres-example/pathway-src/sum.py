@@ -20,6 +20,10 @@ output_postgres_settings = {
 }
 
 
+class InputSchema(pw.Schema):
+    value: int
+
+
 print("Imports OK!")
 time.sleep(10)
 print("Starting Pathway:")
@@ -29,8 +33,7 @@ print("Starting Pathway:")
 t = pw.io.debezium.read(
     input_rdkafka_settings,
     topic_name="postgres.public.values",
-    value_columns=["value"],
-    types={"value": pw.Type.INT},
+    schema=InputSchema,
     autocommit_duration_ms=100,
 )
 t = t.debug("t")

@@ -42,10 +42,14 @@ class TwitterSubject(pw.io.python.ConnectorSubject):
 
 
 if __name__ == "__main__":
+
+    class InputSchema(pw.Schema):
+        key: int = pw.column_definition(primary_key=True)
+        text: str
+
     input = pw.io.python.read(
         TwitterSubject(),
-        primary_key=["id"],
-        value_columns=["text"],
+        schema=InputSchema,
         autocommit_duration_ms=1000,
     )
 

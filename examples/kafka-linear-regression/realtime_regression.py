@@ -20,14 +20,19 @@ rdkafka_settings = {
     "sasl.password": kafka_pass,
 }
 
+
+class InputSchema(pw.Schema):
+    x: float
+    y: float
+
+
 # use kafka connector to read the kafka stream
 t = pw.io.kafka.read(
     rdkafka_settings,
     topic="linear-regression",
-    value_columns=["x", "y"],
+    schema=InputSchema,
     format="json",
     autocommit_duration_ms=1000,
-    types={"x": pw.Type.INT, "y": pw.Type.FLOAT},
 )
 
 # write the input data to a CSV file for future reference

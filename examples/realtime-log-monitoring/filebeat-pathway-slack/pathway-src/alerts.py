@@ -1,10 +1,8 @@
 # Copyright © 2023 Pathway
 
 import time
-from datetime import datetime
 
 import requests
-from dateutil import parser
 
 import pathway as pw
 
@@ -22,10 +20,12 @@ rdkafka_settings = {
     "session.timeout.ms": "6000",
 }
 
-
-def convert_timestamp(datestring):
-    yourdate = parser.parse(datestring)
-    return datetime.timestamp(yourdate)
+inputSchema = pw.schema_builder(
+    columns={
+        "@timestamp": pw.column_definition(dtype=str),
+        "message": pw.column_definition(dtype=str),
+    }
+)
 
 
 # We use the Kafka connector to listen to the "logs" topic
@@ -34,16 +34,13 @@ log_table = pw.io.kafka.read(
     rdkafka_settings,
     topic="logs",
     format="json",
-    value_columns=[
-        "@timestamp",
-        "message",
-    ],
+    schema=inputSchema,
     autocommit_duration_ms=100,
 )
 log_table = log_table.select(timestamp=pw.this["@timestamp"], log=pw.this.message)
 log_table = log_table.select(
     pw.this.log,
-    timestamp=pw.apply_with_type(convert_timestamp, float, pw.this.timestamp),
+    timestamp=pw.this.timestamp.dt.strptime("%Y-%m-%dT%H:%M:%S.%fZ").dt.timestamp(),
 )
 
 t_latest_log = log_table.reduce(last_log=pw.reducers.max(pw.this.timestamp))

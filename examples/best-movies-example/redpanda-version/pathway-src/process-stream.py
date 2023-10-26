@@ -15,10 +15,6 @@ rdkafka_settings = {
 
 
 def compute_best(t_ratings, K):
-    t_ratings = t_ratings.select(
-        movieId=pw.apply_with_type(int, int, pw.this.movieId),
-        rating=pw.apply_with_type(float, float, pw.this.rating),
-    )
     t_best_ratings = t_ratings.groupby(pw.this.movieId).reduce(
         pw.this.movieId,
         sum_ratings=pw.reducers.sum(pw.this.rating),
@@ -58,15 +54,16 @@ def compute_best(t_ratings, K):
     return t_best_ratings
 
 
+class inputStreamSchema(pw.Schema):
+    movieId: int
+    rating: float
+
+
 t_ratings = pw.io.redpanda.read(
     rdkafka_settings,
     topic="ratings",
     format="json",
-    value_columns=[
-        "movieId",
-        "rating",
-    ],
-    types={"movieId": pw.Type.INT, "rating": pw.Type.FLOAT},
+    schema=inputStreamSchema,
     autocommit_duration_ms=100,
 )
 
