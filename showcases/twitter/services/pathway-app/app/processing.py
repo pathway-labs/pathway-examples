@@ -243,7 +243,9 @@ def _filter_out_locations_by_closeness_step(
     return tweet_pairs
 
 
-def filter_out_locations_by_closeness(tweet_pairs: pw.Table, author_meta: pw.Table):
+def filter_out_locations_by_closeness(
+    tweet_pairs: pw.Table, author_meta: pw.Table
+) -> pw.Table:
     """Iteratively filter out bad locations using distance to referenced tweets.
 
     Underlying idea is that if the user does not have retweets in a close area, then his location is probably faulty.

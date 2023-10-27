@@ -56,12 +56,12 @@ async def read_impact(start: int, end: int) -> dict:
         author_meta.coord_shifted,
         author_meta.total_responses,
         author_meta.total_magic_influence,
-        coalesce(agg.responses_count, 0) as responses_count,
+        coalesce(agg.responses_count, 0)::bigint as responses_count,
         coalesce(agg.mean_sentiment, 0) as mean_sentiment,
         coalesce(agg.magic_influence, 0) as magic_influence,
-        coalesce(agg.far_count, 0) as far_count,
-        coalesce(agg.medium_count, 0) as medium_count,
-        coalesce(agg.close_count, 0) as close_count
+        coalesce(agg.far_count, 0)::bigint as far_count,
+        coalesce(agg.medium_count, 0)::bigint as medium_count,
+        coalesce(agg.close_count, 0)::bigint as close_count
     FROM author_meta
     LEFT JOIN (
         SELECT

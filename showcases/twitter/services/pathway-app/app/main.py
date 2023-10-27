@@ -39,6 +39,16 @@ def process_tweets(tweets: pw.Table[TweetUnparsed]):
         tweet_pairs.filter(tweet_pairs.is_good)
     )
     author_meta = enrich_metadata_with_total_influence(grouped, author_meta)
+
+    author_meta = author_meta.with_columns(
+        coord_to=pw.apply_with_type(str, str, pw.this.coord_to),
+        coord_shifted=pw.apply_with_type(str, str, pw.this.coord_to),
+    )
+
+    tweet_pairs = tweet_pairs.with_columns(
+        coord_from=pw.apply_with_type(str, str, pw.this.coord_from),
+        coord_to=pw.apply_with_type(str, str, pw.this.coord_to),
+    )
     return tweet_pairs, grouped, author_meta
 
 
