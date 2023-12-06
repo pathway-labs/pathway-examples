@@ -1,16 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# <a href="https://colab.research.google.com/github/pathwaycom/pathway-examples/blob/main/documentation/from_jupyter_to_deploy/part3_kafka_and_alerts.ipynb" target="_parent"><img src="https://pathway.com/assets/colab-badge.svg" alt="Run In Colab" class="inline"/></a>
-
-# # Installing Pathway with Python 3.10+
-#
-# In the cell below, we install Pathway into a Python 3.10+ Linux runtime.
-#
-# > **If you are running in Google Colab, please run the colab notebook (Ctrl+F9)**, disregarding the 'not authored by Google' warning.
-# >
-# > **The installation and loading time is less than 1 minute**.
-#
+# This is part of the tutorial https://pathway.com/developers/user-guide/from-jupyter-to-deploy
 
 # In[ ]:
 
@@ -20,8 +11,12 @@
 
 # In[1]:
 
-
 import datetime
+
+import bokeh.models
+import bokeh.plotting
+import panel as pn
+import requests
 
 import pathway as pw
 
@@ -154,9 +149,6 @@ alerts = joint_stats.filter(pw.this.is_alert).select(
 # In[7]:
 
 
-import bokeh.models
-
-
 def stats_plotter(src):
     actions = ["buy", "sell", "hodl"]
     color_map = bokeh.models.CategoricalColorMapper(
@@ -198,20 +190,14 @@ def stats_plotter(src):
 # In[8]:
 
 
-import panel as pn
-
 viz = pn.Row(
     joint_stats.plot(stats_plotter, sorting_col="t"),
     alerts.show(include_id=False, sorters=[{"field": "t", "dir": "desc"}]),
 )
-viz
-viz
 
 
 # In[9]:
 
-
-import requests
 
 slack_alert_channel_id = "SLACK_CHANNEL_ID"
 slack_alert_token = "SLACK_TOKEN"

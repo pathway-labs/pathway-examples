@@ -1,16 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# <a href="https://colab.research.google.com/github/pathwaycom/pathway-examples/blob/main/documentation/from_jupyter_to_deploy/part3_kafka_data_streamer.ipynb" target="_parent"><img src="https://pathway.com/assets/colab-badge.svg" alt="Run In Colab" class="inline"/></a>
-
-# # Installing Pathway with Python 3.10+
-#
-# In the cell below, we install Pathway into a Python 3.10+ Linux runtime.
-#
-# > **If you are running in Google Colab, please run the colab notebook (Ctrl+F9)**, disregarding the 'not authored by Google' warning.
-# >
-# > **The installation and loading time is less than 1 minute**.
-#
+# This is part of the tutorial https://pathway.com/developers/user-guide/from-jupyter-to-deploy
 
 # In[ ]:
 
@@ -23,14 +14,12 @@
 # In[1]:
 
 
-# OPTIONAL Download CSV file
-# get_ipython().system('wget -nc https://gist.githubusercontent.com/janchorowski/e351af72ecd8d206a34763a428826ab7/raw/ticker.csv')
+# Download CSV file by running
+# wget -nc https://gist.githubusercontent.com/janchorowski/e351af72ecd8d206a34763a428826ab7/raw/ticker.csv'
 
 
 # In[2]:
 
-
-import datetime
 
 import pathway as pw
 
