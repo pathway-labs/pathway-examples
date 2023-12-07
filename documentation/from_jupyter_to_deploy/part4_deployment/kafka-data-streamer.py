@@ -56,7 +56,7 @@ data = pw.demo.replay_csv(fname, schema=DataSchema, input_rate=1000)
 # In[5]:
 
 
-# TODO: please set appropriaye values for KAFKA_ENDPOINT, KAFKA_USERNAME, and KAFKA_PASSWORD
+# TODO: please set appropriate values for KAFKA_ENDPOINT, KAFKA_USERNAME, and KAFKA_PASSWORD
 rdkafka_producer_settings = {
     "bootstrap.servers": "kafka:9092",
     "security.protocol": "plaintext",

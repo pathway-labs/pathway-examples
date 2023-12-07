@@ -164,16 +164,16 @@ def stats_plotter(src):
 
     fig.line("t", "vwap", source=src)
 
-    band = bokeh.models.Band(
-        base="t",
-        lower="bollinger_lower",
-        upper="bollinger_upper",
+    fig.line("t", "bollinger_lower", source=src, line_alpha=0.3)
+    fig.line("t", "bollinger_upper", source=src, line_alpha=0.3)
+    fig.varea(
+        x="t",
+        y1="bollinger_lower",
+        y2="bollinger_upper",
         fill_alpha=0.3,
         fill_color="gray",
-        line_color="black",
         source=src,
     )
-    fig.add_layout(band)
 
     fig.scatter(
         "t",
