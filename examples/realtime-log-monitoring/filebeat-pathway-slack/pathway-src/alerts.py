@@ -56,7 +56,7 @@ t_alert = t_alert.select(
 t_alert = t_alert.select(pw.this.alert)
 
 
-def on_alert_event(row, time, is_addition):
+def on_alert_event(key, row, time, is_addition):
     alert_message = "Alert '{}' changed state to {}".format(
         row["alert"],
         "ACTIVE" if is_addition else "INACTIVE",
