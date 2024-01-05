@@ -251,16 +251,11 @@ def filter_out_locations_by_closeness(
     Underlying idea is that if the user does not have retweets in a close area, then his location is probably faulty.
     """
     return pw.iterate(
-        lambda tweet_pairs, author_meta: dict(
-            tweet_pairs=_filter_out_locations_by_closeness_step(
-                tweet_pairs=tweet_pairs, author_meta=author_meta
-            ),
-            author_meta=author_meta,
-        ),
+        _filter_out_locations_by_closeness_step,
         # we don't need iterate_universe - tweet_pairs use marking to disable some rows
         tweet_pairs=tweet_pairs,
         author_meta=author_meta,
-    ).tweet_pairs
+    )
 
 
 def enrich_metadata_with_total_influence(grouped: pw.Table, author_meta: pw.Table):
