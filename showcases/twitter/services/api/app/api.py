@@ -1,3 +1,5 @@
+# Copyright © 2024 Pathway
+
 """Thin fastapi endpoint querying postgres database and answering requests from frontend."""
 
 import psycopg2

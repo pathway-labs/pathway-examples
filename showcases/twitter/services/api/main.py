@@ -1,3 +1,5 @@
+# Copyright © 2024 Pathway
+
 import uvicorn
 
 if __name__ == "__main__":

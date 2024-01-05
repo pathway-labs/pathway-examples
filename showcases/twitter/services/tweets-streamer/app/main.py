@@ -1,3 +1,5 @@
+# Copyright © 2024 Pathway
+
 import argparse
 import datetime
 import json
