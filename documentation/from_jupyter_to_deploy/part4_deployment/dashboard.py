@@ -52,11 +52,7 @@ data = pw.io.kafka.read(
 # In[2]:
 
 
-data = data.with_columns(
-    t=pw.apply_with_type(
-        datetime.datetime.fromtimestamp, pw.DateTimeNaive, data.t / 1000.0
-    )
-)
+data = data.with_columns(t=data.t.dt.utc_from_timestamp(unit="ms"))
 
 
 # In[3]:
@@ -68,7 +64,7 @@ minute_20_stats = (
         window=pw.temporal.sliding(
             hop=datetime.timedelta(minutes=1), duration=datetime.timedelta(minutes=20)
         ),
-        behavior=pw.temporal.common_behavior(delay=datetime.timedelta(minutes=20)),
+        behavior=pw.temporal.exactly_once_behavior(),
         instance=pw.this.ticker,
     )
     .reduce(
@@ -96,6 +92,7 @@ minute_1_stats = (
     data.windowby(
         pw.this.t,
         window=pw.temporal.tumbling(datetime.timedelta(minutes=1)),
+        behavior=pw.temporal.exactly_once_behavior(),
         instance=pw.this.ticker,
     )
     .reduce(
