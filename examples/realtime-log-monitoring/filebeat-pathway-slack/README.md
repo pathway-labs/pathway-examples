@@ -21,7 +21,7 @@ How to install the project:
 How to launch the project:
  1. `make` in the root repo. It will start all the four containers
  2. `make connect` to connect to the Filebeat container.
- 3. `./generate_stream.sh` to launch the stream generation from the Filebeat container.
+ 3. `./generate_input_stream.sh` to launch the stream generation from the Filebeat container.
 
 The updates should be received directly in your Slack channel.
 You can use `make connect-pathway` to connect to the pathway container.

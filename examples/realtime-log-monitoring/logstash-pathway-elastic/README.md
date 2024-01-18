@@ -21,7 +21,7 @@ To install the project, you only need to clone the repository.
 How to launch the project:
  1. `make` in the root repo. It will start all the four containers
  2. `make connect` to connect to the Filebeat container.
- 3. `./generate_stream.sh` to launch the stream generation from the Filebeat container.
+ 3. `./generate_input_stream.sh` to launch the stream generation from the Filebeat container.
 
 The updates should be received directly in ElasticSearch.
 To access the logs in ElasticSearch, you can do `curl localhost:9200/alerts/_search?pretty`.

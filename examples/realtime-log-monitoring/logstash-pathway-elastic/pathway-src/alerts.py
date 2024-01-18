@@ -1,11 +1,12 @@
 # Copyright © 2024 Pathway
 
 import time
+from datetime import timedelta
 
 import pathway as pw
 
 alert_threshold = 5
-sliding_window_duration = 1
+sliding_window_duration = timedelta(seconds=1)
 
 rdkafka_settings = {
     "bootstrap.servers": "kafka:9092",
@@ -23,32 +24,33 @@ inputSchema = pw.schema_builder(
 
 # We use the Kafka connector to listen to the "logs" topic
 # We only need the timestamp and the message
-t_logs = pw.io.kafka.read(
+log_table = pw.io.kafka.read(
     rdkafka_settings,
     topic="logs",
     format="json",
     schema=inputSchema,
     autocommit_duration_ms=100,
 )
-t_logs = t_logs.select(timestamp=pw.this["@timestamp"], log=pw.this.message)
-t_logs = t_logs.select(
+log_table = log_table.select(timestamp=pw.this["@timestamp"], log=pw.this.message)
+log_table = log_table.select(
     pw.this.log,
-    timestamp=pw.this.timestamp.dt.strptime("%Y-%m-%dT%H:%M:%S.%fZ").dt.timestamp(),
+    timestamp=pw.this.timestamp.dt.strptime("%Y-%m-%dT%H:%M:%S.%fZ"),
 )
 
-t_latest_log = t_logs.reduce(last_log=pw.reducers.max(pw.this.timestamp))
+t_sliding_window = log_table.windowby(
+    log_table.timestamp,
+    window=pw.temporal.sliding(
+        hop=timedelta(milliseconds=10), duration=sliding_window_duration
+    ),
+    behavior=pw.temporal.common_behavior(
+        cutoff=timedelta(seconds=0.1),
+        keep_results=False,
+    ),
+).reduce(timestamp=pw.this._pw_window_end, count=pw.reducers.count())
 
-
-t_sliding_window = t_logs.filter(
-    pw.this.timestamp >= t_latest_log.ix_ref().last_log - sliding_window_duration
+t_alert = t_sliding_window.reduce(count=pw.reducers.max(pw.this.count)).select(
+    alert=pw.this.count >= alert_threshold
 )
-t_alert = t_sliding_window.reduce(count=pw.reducers.count())
-t_alert = t_alert.select(
-    alert=pw.this.count >= alert_threshold, latest_update=t_latest_log.ix_ref().last_log
-)
-t_alert = t_alert.select(pw.this.alert)
-
-time.sleep(10)
 
 pw.io.elasticsearch.write(
     t_alert,
@@ -57,5 +59,6 @@ pw.io.elasticsearch.write(
     index_name="alerts",
 )
 
+time.sleep(5)
 # We launch the computation.
 pw.run()

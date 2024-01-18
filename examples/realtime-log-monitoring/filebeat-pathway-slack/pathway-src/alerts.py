@@ -1,13 +1,14 @@
 # Copyright © 2024 Pathway
 
 import time
+from datetime import timedelta
 
 import requests
 
 import pathway as pw
 
 alert_threshold = 5
-sliding_window_duration = 1
+sliding_window_duration = timedelta(seconds=1)
 
 
 SLACK_ALERT_CHANNEL_ID = "XXX"
@@ -40,20 +41,23 @@ log_table = pw.io.kafka.read(
 log_table = log_table.select(timestamp=pw.this["@timestamp"], log=pw.this.message)
 log_table = log_table.select(
     pw.this.log,
-    timestamp=pw.this.timestamp.dt.strptime("%Y-%m-%dT%H:%M:%S.%fZ").dt.timestamp(),
+    timestamp=pw.this.timestamp.dt.strptime("%Y-%m-%dT%H:%M:%S.%fZ"),
 )
 
-t_latest_log = log_table.reduce(last_log=pw.reducers.max(pw.this.timestamp))
+t_sliding_window = log_table.windowby(
+    log_table.timestamp,
+    window=pw.temporal.sliding(
+        hop=timedelta(milliseconds=10), duration=sliding_window_duration
+    ),
+    behavior=pw.temporal.common_behavior(
+        cutoff=timedelta(seconds=0.1),
+        keep_results=False,
+    ),
+).reduce(timestamp=pw.this._pw_window_end, count=pw.reducers.count())
 
-
-t_sliding_window = log_table.filter(
-    pw.this.timestamp >= t_latest_log.ix_ref().last_log - sliding_window_duration
+t_alert = t_sliding_window.reduce(count=pw.reducers.max(pw.this.count)).select(
+    alert=pw.this.count >= alert_threshold
 )
-t_alert = t_sliding_window.reduce(count=pw.reducers.count())
-t_alert = t_alert.select(
-    alert=pw.this.count >= alert_threshold, latest_update=t_latest_log.ix_ref().last_log
-)
-t_alert = t_alert.select(pw.this.alert)
 
 
 def on_alert_event(key, row, time, is_addition):
@@ -73,6 +77,6 @@ def on_alert_event(key, row, time, is_addition):
 
 pw.io.subscribe(t_alert, on_alert_event)
 
-time.sleep(10)
+time.sleep(5)
 # We launch the computation.
 pw.run()
