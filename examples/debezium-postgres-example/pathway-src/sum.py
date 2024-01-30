@@ -10,6 +10,7 @@ input_rdkafka_settings = {
     "security.protocol": "plaintext",
     "group.id": "0",
     "session.timeout.ms": "6000",
+    "auto.offset.reset": "earliest",
 }
 output_postgres_settings = {
     "host": "postgres",
