@@ -1,10 +1,10 @@
 # Copyright © 2024 Pathway
 
-import time
-import random
 import json
-
+import random
+import time
 from datetime import datetime
+
 from kafka import KafkaProducer
 from pytz import timezone
 
