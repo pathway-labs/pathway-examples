@@ -15,7 +15,7 @@ rdkafka_settings = {
 str_repr = "%Y-%m-%d %H:%M:%S.%f %z"
 
 
-class inputStreamSchema(pw.Schema):
+class InputStreamSchema(pw.Schema):
     date: str
     message: str
 
@@ -24,7 +24,7 @@ timestamps_timezone_1 = pw.io.kafka.read(
     rdkafka_settings,
     topic="timezone1",
     format="json",
-    schema=inputStreamSchema,
+    schema=InputStreamSchema,
     autocommit_duration_ms=100,
 )
 
@@ -32,12 +32,12 @@ timestamps_timezone_2 = pw.io.kafka.read(
     rdkafka_settings,
     topic="timezone2",
     format="json",
-    schema=inputStreamSchema,
+    schema=InputStreamSchema,
     autocommit_duration_ms=100,
 )
 
 
-def convert_to_timestamp(table):
+def convert_to_timestamp(table: pw.Table) -> pw.Table:
     table = table.select(
         date=pw.this.date.dt.strptime(fmt=str_repr, contains_timezone=True),
         message=pw.this.message,
