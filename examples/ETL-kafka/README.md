@@ -10,13 +10,13 @@ The project is organized as follows:
  - a Python container creating the data streams and sending them to Kafka
  - a Python container doing the ETL using Pathway, sending the results back to Kafka
 
-The different containers are managed via docker-compose.
+The containers are managed via docker-compose.
 
 ## Launching the program
 
-You can launch the project using `docker compose up -d` or using the make file (`make`).
+You can launch the project using `docker compose up -d` or using the Makefile (`make`).
 
-You can access the logs of the different containers using the commands in the Makefile.
+You can access the logs of the containers using the commands in the Makefile.
 
 ### Reading the results
 
@@ -24,7 +24,7 @@ The example is now running, and the date times are transformed and loaded into
 the `unified_timestamps` topic of the Kafka instance.
 You can access those results with your favorite way to access Kafka.
 
-You can read the results and output them as a CSV file by using the `reading-results.py`
+You can read the results and output them as a CSV file by using the `read-results.py`
 provided in the container running Pathway.
 Do as follows:
  - connect to the container with `make connect` (or `docker compose exec -it pathway bash`)

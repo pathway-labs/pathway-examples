@@ -2,7 +2,7 @@ build:
 	docker compose up -d
 
 stop:
-	docker compose down -v
+	docker compose down -v --remove-orphans
 	docker rmi etl-kafka-pathway:latest 
 	docker rmi etl-kafka-stream-producer:latest 
 
@@ -11,7 +11,7 @@ connect:
 connect-prod:
 	docker compose exec -it stream-producer bash
 connect-kafka:
-	docker compose exec kafka bash
+	docker compose exec -it kafka bash
 
 logs:
 	docker compose logs pathway
