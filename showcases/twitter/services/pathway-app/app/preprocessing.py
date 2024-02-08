@@ -76,20 +76,5 @@ def parse_and_prefilter_tweets(tweets: pw.Table[TweetUnparsed]) -> pw.Table[Twee
 
     processed = tweets.select(processed=pw.apply(_prepare_pairs, tweets.data))
     processed = processed.filter(processed.processed.is_not_none())
-    result = unpack_col(
-        processed.processed,
-        "tweet_from_id",
-        "tweet_from_created_at",
-        "tweet_from_text",
-        "tweet_from_author_id",
-        "tweet_from_author_username",
-        "tweet_from_author_location",
-        "tweet_from_author_public_metrics",
-        "tweet_to_id",
-        "tweet_to_created_at",
-        "tweet_to_text",
-        "tweet_to_author_id",
-        "tweet_to_author_username",
-        "tweet_to_author_location",
-    ).update_types(**TweetPairs.typehints())
+    result = unpack_col(processed.processed, schema=TweetPairs)
     return result
