@@ -5,6 +5,10 @@ import os
 import random
 import time
 
+from dotenv import load_dotenv
+
+load_dotenv()
+
 from kafka import KafkaProducer
 
 topic = "linear-regression"
@@ -19,7 +23,7 @@ def get_value(i):
 
 
 # set kafka credentials
-kafka_endpoint = "talented-cow-10356-eu1-kafka.upstash.io:9092"
+kafka_endpoint = os.environ["UPSTASH_KAFKA_ENDPOINT"]
 kafka_user = os.environ["UPSTASH_KAFKA_USER"]
 kafka_pass = os.environ["UPSTASH_KAFKA_PASS"]
 

@@ -4,8 +4,12 @@ import os
 
 import pathway as pw
 
+from dotenv import load_dotenv
+
+load_dotenv()
+
 # set kafka credentials (from upstash)
-kafka_endpoint = "talented-cow-10356-eu1-kafka.upstash.io:9092"
+kafka_endpoint = os.environ["UPSTASH_KAFKA_ENDPOINT"]
 kafka_user = os.environ["UPSTASH_KAFKA_USER"]
 kafka_pass = os.environ["UPSTASH_KAFKA_PASS"]
 
