@@ -14,7 +14,7 @@ rdkafka_settings = {
 topic_name = "unified_timestamps"
 
 
-class inputStreamSchema(pw.Schema):
+class InputStreamSchema(pw.Schema):
     timestamp: float
     message: str
 
@@ -23,7 +23,7 @@ def read_results():
     table = pw.io.kafka.read(
         rdkafka_settings,
         topic=topic_name,
-        schema=inputStreamSchema,
+        schema=InputStreamSchema,
         format="json",
         autocommit_duration_ms=100,
     )

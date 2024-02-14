@@ -28,6 +28,6 @@ You can read the results and output them as a CSV file by using the `read-result
 provided in the container running Pathway.
 Do as follows:
  - connect to the container with `make connect` (or `docker compose exec -it pathway bash`)
- - launch the script with `python reading-results.py`
+ - launch the script with `python read-results.py`
 Pathway reads the incoming data and outputs it in the `results.csv` file.
 New data will be automatically added.
