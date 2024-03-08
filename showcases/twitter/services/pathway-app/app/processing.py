@@ -121,11 +121,12 @@ def add_magic_influence(tweet_pairs: pw.Table):
 def compute_aggs_per_author_and_timewindow(tweet_pairs: pw.Table):
     """Computes aggregate statistics for every author_id and date window."""
 
+    @pw.udf(deterministic=True)
     def _bucketize_datetime(x):
         return int(dateutil.parser.parse(x).replace(second=0).timestamp())
 
     tweet_pairs += tweet_pairs.select(
-        time_bucket=pw.apply(_bucketize_datetime, tweet_pairs.tweet_from_created_at)
+        time_bucket=_bucketize_datetime(tweet_pairs.tweet_from_created_at)
     )
 
     total_stats = tweet_pairs.groupby(
